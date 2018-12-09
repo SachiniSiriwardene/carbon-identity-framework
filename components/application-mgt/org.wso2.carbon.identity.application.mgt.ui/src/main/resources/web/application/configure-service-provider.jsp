@@ -143,6 +143,7 @@
      if (ApplicationMgtUIUtil.JWKS_URI.equals(spProperty.getName())) {
           hasJWKSUri = true;
           jwksUri = spProperty.getValue();
+          System.out.println("JWKS "+ jwksUri);
           }
        }
     }
@@ -1386,7 +1387,7 @@
                         <tr id="use_jwks_uri" <% if (appBean.getServiceProvider().getCertificateContent() != null) { %> style="display:none" <% } %>>
                             <td style="width:15%" class="leftCol-med labelField">JWKS URI:</td>
                             <td>
-                               <input type="url" pattern="https?://.+jwks" id="jwksUri" name="jwksUri" type="text" value="<%=Encode.forHtmlAttribute(jwksUri)%>"
+                               <input  id="jwksUri" name="jwksUri" type="text" value="<%=Encode.forHtmlAttribute(jwksUri)%>"
                                   autofocus required/>
 
                             </td>
@@ -2100,7 +2101,7 @@
                                                                 }
                                                                 if (oauthConsumerSecret != null) {
                                                             %>
-                                                            <% if (!((isHashDisabled != null && !isHashDisabled.isEmpty() && isHashDisabled.equals("false")) || appBean.getOauthConsumerSecret() == null)) { %>
+                                                            <% if (!(appBean.getOauthConsumerSecret() == null || "false".equals(isHashDisabled))) { %>
                                                             <div>
                                                                 <input style="border: none; background: white;"
                                                                        type="password" autocomplete="off"

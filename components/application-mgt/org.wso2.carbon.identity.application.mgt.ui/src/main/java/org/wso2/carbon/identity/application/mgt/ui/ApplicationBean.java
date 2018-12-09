@@ -48,6 +48,7 @@ import org.wso2.carbon.identity.application.common.model.xsd.RoleMapping;
 import org.wso2.carbon.identity.application.common.model.xsd.ServiceProvider;
 import org.wso2.carbon.identity.application.common.model.xsd.ServiceProviderProperty;
 import org.wso2.carbon.identity.application.mgt.ui.util.ApplicationMgtUIConstants;
+import org.wso2.carbon.ui.CarbonUIMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1116,24 +1117,25 @@ public class ApplicationBean {
         serviceProvider.setApplicationName(request.getParameter("spName"));
         serviceProvider.setDescription(request.getParameter("sp-description"));
         serviceProvider.setCertificateContent(request.getParameter("sp-certificate"));
-
         String jwks = request.getParameter("jwksUri");
+        boolean jwksExist = false;
         ServiceProviderProperty propertyForJWKS = new ServiceProviderProperty();
         //adding jwks uri as a sp meta data
         ArrayList<ServiceProviderProperty> spPropList = new ArrayList<>(Arrays.asList(serviceProvider.getSpProperties()));
 
-        //if a jwks propert already exist for the service provider check whether the stored value is not  equal to the
+        //if a jwks property already exist for the service provider check whether the stored value is not  equal to the
         //value recieved from the request
         for (ServiceProviderProperty spProperty : spPropList) {
             if ((ApplicationMgtUIUtil.JWKS_URI.equals(spProperty.getName()) && !jwks.equals(spProperty.getValue()))
                     || (ApplicationMgtUIUtil.JWKS_URI.equals(spProperty.getName()) && jwks.equals(""))) {
                 //remove the serivice provider property from array
                 spPropList.remove(spPropList.indexOf(spProperty));
+                jwksExist = true;
                 break;
             }
         }
         //if a new value is set for the jwks uri add it to the service provider properties
-        if (!jwks.equals("")) {
+        if (!jwks.equals("") || jwksExist) {
             propertyForJWKS.setDisplayName(ApplicationMgtUIUtil.JWKS_DISPLAYNAME);
             propertyForJWKS.setName(ApplicationMgtUIUtil.JWKS_URI);
             propertyForJWKS.setValue(jwks);
